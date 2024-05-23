@@ -33,7 +33,6 @@ const resolvers = {
     },
     Mutation: {
         deleteBook: (_, { id }) => {
-            console.log(id);
             try {
                 books = books.filter((book) => book.id !== id);
                 return { result: true };
@@ -48,6 +47,11 @@ const resolvers = {
             console.log(book);
             books.push(book);
             return book;
+        },
+        updateBook: (_, { id, book }) => {
+            const index = books.findIndex((book) => book.id === id);
+            books[index] = { ...books[index], ...book };
+            return (books[index]);
         },
     },
 };

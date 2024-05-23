@@ -10,11 +10,14 @@ type Query {
 Mutation
 """
 type Mutation {
-  createBook(book:BookInput!): Book!
-  updateBook(id:ID!, input:BookInput): Book!
+  createBook(book:BookCreateInput!): Book!
+  updateBook(id:ID!, book:BookUpdateInput): Book!
   deleteBook(id:ID!): deleteBookPayload!
 }
 
+"""
+削除結果
+"""
 type deleteBookPayload {
   result: Boolean!
 }
@@ -22,7 +25,7 @@ type deleteBookPayload {
 """
 書籍の入力情報
 """
-input BookInput {
+input BookCreateInput {
 
   """
   書籍のタイトル
@@ -55,6 +58,45 @@ input BookInput {
   releaseDate: String!
 }
 
+"""
+書籍のアップデート
+"""
+input BookUpdateInput {
+
+  """
+  書籍のタイトル
+  """
+  title: String
+
+  """
+  著者
+  """
+  author: String
+  
+  """
+  出版社
+  """
+  publisher: String
+  
+  """
+  ISBN
+  """
+  isbn: String
+  
+  """
+  カテゴリ
+  """
+  category: Category
+  
+  """
+  発売日
+  """
+  releaseDate: String
+}
+
+"""
+書籍
+"""
 type Book {
   """
   ID
@@ -92,6 +134,9 @@ type Book {
   releaseDate: String!
 }
 
+"""
+カテゴリ
+"""
 enum Category {
   FICTION
   TRAVEL

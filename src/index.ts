@@ -4,18 +4,38 @@ import { addResolversToSchema } from "@graphql-tools/schema";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchemaSync } from "@graphql-tools/load";
 
+interface BookCreateInput {
+  id: string;
+  title: string;
+  author: string;
+  publisher: string;
+  isbn?: string | null;
+  category: Category;
+  releaseDate: string;
+}
+
+enum Category {
+  FICTION = "FICTION",
+  TRAVEL = "TRAVEL",
+  HISTORY = "HISTORY",
+  SCIENCE = "SCIENCE",
+  BUSINESS = "BUSINESS",
+  ART = "ART",
+  MUSIC = "MUSIC",
+}
+
 const schema = loadSchemaSync("./schema.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
-let books = [
+let books: BookCreateInput[] = [
   {
     id: "1",
     title: "ノンデザイナーズ・デザインブック",
     author: "Robin Williams",
     publisher: "マイナビ出版",
     isbn: "9784839983796",
-    category: "ART",
+    category: Category.ART,
     releaseDate: "2023/8/25",
   },
   {
@@ -24,7 +44,7 @@ let books = [
     author: "TEST",
     publisher: "ダイヤモンド社",
     isbn: "9784478119044",
-    category: "BUSINESS",
+    category: Category.BUSINESS,
     releaseDate: "2024/3/27",
   },
 ];
@@ -32,12 +52,11 @@ let books = [
 const resolvers = {
   Query: {
     selectBooks: () => books,
-    selectBook: (_, { id }) => books.find((book) => book.id === id),
+    selectBook: (_, { id }: { id: string }) => books.find((book) => book.id === id),
   },
 
   Mutation: {
-    deleteBook: (_, { id }) => {
-      console.log(id);
+    deleteBook: (_, { id }: { id: string }) => {
       try {
         books = books.filter((book) => book.id !== id);
         return { result: true };
@@ -46,7 +65,7 @@ const resolvers = {
       }
     },
 
-    createBook: (_, { book }) => {
+    createBook: (_, { book } : {book : BookCreateInput}) => {
       const number = books.length + 1;
       book.id = number.toString();
       console.log(book);
@@ -55,8 +74,10 @@ const resolvers = {
     },
 
     updateBook: (_, { id, book }) => {
-
-    }
+      const index = books.findIndex((book) => book.id === id);
+      books[index] = { ...books[index], ...book };
+      return books[index];
+    },
   },
 };
 
