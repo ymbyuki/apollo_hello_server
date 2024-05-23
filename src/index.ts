@@ -1,31 +1,62 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { addResolversToSchema } from '@graphql-tools/schema';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { loadSchemaSync } from '@graphql-tools/load';
+import { addResolversToSchema } from "@graphql-tools/schema";
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadSchemaSync } from "@graphql-tools/load";
 
-const schema = loadSchemaSync('./schema.graphql', {
+const schema = loadSchemaSync("./schema.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
-const books = [
+let books = [
   {
-    title: "The Awakening",
-    author: "Kate Chopin",
-    type: "FICTION",
+    id: "1",
+    title: "ノンデザイナーズ・デザインブック",
+    author: "Robin Williams",
+    publisher: "マイナビ出版",
+    isbn: "9784839983796",
+    category: "ART",
+    releaseDate: "2023/8/25",
   },
   {
-    title: "City of Glass",
-    author: "Paul Auster",
-    type: "NON_FICTION",
+    id: "2",
+    title: "頭のいい人だけが解ける論理的思考問題",
+    author: "TEST",
+    publisher: "ダイヤモンド社",
+    isbn: "9784478119044",
+    category: "BUSINESS",
+    releaseDate: "2024/3/27",
   },
 ];
 
 const resolvers = {
   Query: {
-    books: () => books,
-    firstbook: () => books[0],
-    bookType: (_, { type }) => books.filter((book) => book.type === type),
+    selectBooks: () => books,
+    selectBook: (_, { id }) => books.find((book) => book.id === id),
+  },
+
+  Mutation: {
+    deleteBook: (_, { id }) => {
+      console.log(id);
+      try {
+        books = books.filter((book) => book.id !== id);
+        return { result: true };
+      } catch (error) {
+        return { result: false };
+      }
+    },
+
+    createBook: (_, { book }) => {
+      const number = books.length + 1;
+      book.id = number.toString();
+      console.log(book);
+      books.push(book);
+      return book;
+    },
+
+    updateBook: (_, { id, book }) => {
+
+    }
   },
 };
 

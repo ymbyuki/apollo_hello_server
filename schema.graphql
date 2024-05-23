@@ -1,11 +1,104 @@
-type Book {
-  title: String
-  author: String
+"""
+Query
+"""
+type Query {
+  selectBooks:[Book!]!
+  selectBook(id: ID!):Book!
 }
 
-type Query {
-  books: [Book]
-  firstbook: Book
-  bookType(type: BookType): [Book]
+"""
+Mutation
+"""
+type Mutation {
+  createBook(book:BookInput!): Book!
+  updateBook(id:ID!, input:BookInput): Book!
+  deleteBook(id:ID!): deleteBookPayload!
+}
+
+type deleteBookPayload {
+  result: Boolean!
+}
+
+"""
+書籍の入力情報
+"""
+input BookInput {
+
+  """
+  書籍のタイトル
+  """
+  title: String!
+
+  """
+  著者
+  """
+  author: String!
+  
+  """
+  出版社
+  """
+  publisher: String!
+  
+  """
+  ISBN
+  """
+  isbn: String
+  
+  """
+  カテゴリ
+  """
+  category: Category!
+  
+  """
+  発売日
+  """
+  releaseDate: String!
+}
+
+type Book {
+  """
+  ID
+  """
+  id: ID!
+
+  """
+  書籍のタイトル
+  """
+  title: String!
+  
+  """
+  著者
+  """ 
+  author: String!
+
+  """
+  出版社
+  """
+  publisher: String!
+
+  """
+  ISBN
+  """
+  isbn: String
+
+  """
+  カテゴリ
+  """
+  category: Category!
+
+  """
+  発売日
+  """
+  releaseDate: String!
+}
+
+enum Category {
+  FICTION
+  TRAVEL
+  HISTORY
+  SCIENCE
+  BUSINESS
+  ART
+  MUSIC
 }
 
