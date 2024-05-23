@@ -1,40 +1,32 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
-  }
-
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
-  type Query {
-    books: [Book]
-  }
-`;
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { addResolversToSchema } from '@graphql-tools/schema';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { loadSchemaSync } from '@graphql-tools/load';
+const schema = loadSchemaSync('./schema.graphql', {
+    loaders: [new GraphQLFileLoader()],
+});
 const books = [
     {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
+        title: "The Awakening",
+        author: "Kate Chopin",
+        type: "FICTION",
     },
     {
-        title: 'City of Glass',
-        author: 'Paul Auster',
+        title: "City of Glass",
+        author: "Paul Auster",
+        type: "NON_FICTION",
     },
 ];
 const resolvers = {
     Query: {
         books: () => books,
+        firstbook: () => books[0],
+        bookType: (_, { type }) => books.filter((book) => book.type === type),
     },
 };
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-});
+const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
+const server = new ApolloServer({ schema: schemaWithResolvers });
 const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
 });
