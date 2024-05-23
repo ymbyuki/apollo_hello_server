@@ -9,7 +9,3 @@ type Query {
   bookType(type: BookType): [Book]
 }
 
-enum BookType {
-  FICTION
-  NON_FICTION
-}
