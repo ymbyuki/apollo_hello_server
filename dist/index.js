@@ -3,9 +3,20 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { addResolversToSchema } from "@graphql-tools/schema";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchemaSync } from "@graphql-tools/load";
+var Category;
+(function (Category) {
+    Category["FICTION"] = "FICTION";
+    Category["TRAVEL"] = "TRAVEL";
+    Category["HISTORY"] = "HISTORY";
+    Category["SCIENCE"] = "SCIENCE";
+    Category["BUSINESS"] = "BUSINESS";
+    Category["ART"] = "ART";
+    Category["MUSIC"] = "MUSIC";
+})(Category || (Category = {}));
 const schema = loadSchemaSync("./schema.graphql", {
     loaders: [new GraphQLFileLoader()],
 });
+const authers = [];
 let books = [
     {
         id: "1",
@@ -13,7 +24,7 @@ let books = [
         author: "Robin Williams",
         publisher: "マイナビ出版",
         isbn: "9784839983796",
-        category: "ART",
+        category: Category.ART,
         releaseDate: "2023/8/25",
     },
     {
@@ -22,7 +33,7 @@ let books = [
         author: "TEST",
         publisher: "ダイヤモンド社",
         isbn: "9784478119044",
-        category: "BUSINESS",
+        category: Category.BUSINESS,
         releaseDate: "2024/3/27",
     },
 ];
@@ -51,7 +62,7 @@ const resolvers = {
         updateBook: (_, { id, book }) => {
             const index = books.findIndex((book) => book.id === id);
             books[index] = { ...books[index], ...book };
-            return (books[index]);
+            return books[index];
         },
     },
 };

@@ -28,6 +28,10 @@ const schema = loadSchemaSync("./schema.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
+const authers = [
+  
+]
+
 let books: BookCreateInput[] = [
   {
     id: "1",

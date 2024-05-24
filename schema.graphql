@@ -4,6 +4,9 @@ Query
 type Query {
   selectBooks:[Book!]!
   selectBook(id: ID!):Book!
+
+  selectAllBookShelf:[BookShelf!]!
+
 }
 
 """
@@ -13,6 +16,46 @@ type Mutation {
   createBook(book:BookCreateInput!): Book!
   updateBook(id:ID!, book:BookUpdateInput): Book!
   deleteBook(id:ID!): deleteBookPayload!
+
+  addBookShelf(bookId: ID!, status: BookStatus!): addBookShelfPayload!
+}
+
+type addBookShelfPayload {
+  shelfId: ID!
+  book: Book!
+  status: BookStatus!
+}
+
+type BookShelf{
+  shelfId: ID!
+  book: Book!
+  status: [BookStatus!]!
+}
+
+type BookStatus {
+  readingStatus: ReadingStatus!
+  review: Review!
+}
+
+type Review {
+  shelfId: ID!
+  score: Int!
+  comment: String
+}
+
+enum ReadingStatus {
+  """
+  未読
+  """
+  UNREAD
+  """
+  読書中
+  """
+  READING
+  """
+  修了
+  """
+  READ
 }
 
 """
