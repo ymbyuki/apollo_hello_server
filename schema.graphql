@@ -2,74 +2,81 @@
 Query
 """
 type Query {
-  selectBooks:[Book!]!
-  selectBook(id: ID!):Book!
+  selectBooks: [Book!]!
+  selectBook(id: ID!): Book!
 
-  selectAllBookShelf:[BookShelf!]!
-
+  selectAllBookShelfItem: BookShelf!
+  selectBookShelfItem(bookShelfItemId: ID): BookShelfItem!
 }
 
 """
 Mutation
 """
 type Mutation {
-  createBook(book:BookCreateInput!): Book!
-  updateBook(id:ID!, book:BookUpdateInput): Book!
-  deleteBook(id:ID!): deleteBookPayload!
+  createBook(book: BookCreateInput!): Book!
+  updateBook(id: ID!, book: BookUpdateInput): Book!
+  deleteBook(id: ID!): Boolean!
 
-  addBookShelf(bookId: ID!, status: BookStatus!): addBookShelfPayload!
+  addBookShelf(bookId: ID!, status: BookStatusInput!): BookShelfItem!
+  updateStatus(bookShelfItemId: ID!, status: BookStatusInput!): BookShelfItem!
+  deleteBookShelfItem(bookShelfItemId: ID!): Boolean!
 }
 
-type addBookShelfPayload {
-  shelfId: ID!
+"本棚の情報"
+type BookShelf {
+  items: [BookShelfItem!]!
+}
+
+input BookStatusInput {
+  readingStatus: ReadingStatus!
+  review: ReviewInput!
+}
+
+"レビューのInput"
+input ReviewInput {
+  score: Int!
+  comment: String
+}
+
+"本棚のアイテム"
+type BookShelfItem {
+  bookShelfItemId: ID!
   book: Book!
   status: BookStatus!
 }
 
-type BookShelf{
-  shelfId: ID!
-  book: Book!
-  status: [BookStatus!]!
-}
-
+"書籍のステータス"
 type BookStatus {
   readingStatus: ReadingStatus!
   review: Review!
 }
 
+"レビュー"
 type Review {
-  shelfId: ID!
   score: Int!
   comment: String
 }
 
+"読んでいるかの情報"
 enum ReadingStatus {
   """
   未読
   """
-  UNREAD
+  UNREAD # 未読
   """
   読書中
   """
-  READING
+  READING # 読書中
   """
   修了
   """
-  READ
-}
-
-"""
-削除結果
-"""
-type deleteBookPayload {
-  result: Boolean!
+  READ # 読了
 }
 
 """
 書籍の入力情報
 """
 input BookCreateInput {
-
   """
   書籍のタイトル
   """
@@ -79,22 +86,22 @@ input BookCreateInput {
   著者
   """
   author: String!
-  
+
   """
   出版社
   """
   publisher: String!
-  
+
   """
   ISBN
   """
   isbn: String
-  
+
   """
   カテゴリ
   """
   category: Category!
-  
+
   """
   発売日
   """
@@ -105,7 +112,6 @@ input BookCreateInput {
 書籍のアップデート
 """
 input BookUpdateInput {
-
   """
   書籍のタイトル
   """
@@ -115,22 +121,22 @@ input BookUpdateInput {
   著者
   """
   author: String
-  
+
   """
   出版社
   """
   publisher: String
-  
+
   """
   ISBN
   """
   isbn: String
-  
+
   """
   カテゴリ
   """
   category: Category
-  
+
   """
   発売日
   """
@@ -150,10 +156,10 @@ type Book {
   書籍のタイトル
   """
   title: String!
-  
+
   """
   著者
-  """ 
+  """
   author: String!
 
   """
@@ -189,4 +195,3 @@ enum Category {
   ART
   MUSIC
 }
-

@@ -13,10 +13,37 @@ var Category;
     Category["ART"] = "ART";
     Category["MUSIC"] = "MUSIC";
 })(Category || (Category = {}));
+var Status;
+(function (Status) {
+    Status["READING"] = "READING";
+    Status["READ"] = "READ";
+    Status["UNREAD"] = "UNREAD";
+})(Status || (Status = {}));
 const schema = loadSchemaSync("./schema.graphql", {
     loaders: [new GraphQLFileLoader()],
 });
-const authers = [];
+let bookShelf = { items: [{
+            bookShelfItemId: 1,
+            bookId: 1,
+            status: 1
+        },
+        {
+            bookShelfItemId: 2,
+            bookId: 2,
+            status: 2
+        }] };
+let status = [{
+        bookShelfItemId: 1,
+        readingStatus: Status.READING,
+        comment: "TESTTEST",
+        score: 5
+    },
+    {
+        bookShelfItemId: 2,
+        readingStatus: Status.READ,
+        comment: "TESTTEST",
+        score: 3
+    }];
 let books = [
     {
         id: "1",
@@ -41,6 +68,34 @@ const resolvers = {
     Query: {
         selectBooks: () => books,
         selectBook: (_, { id }) => books.find((book) => book.id === id),
+        selectAllBookShelfItem: (parent) => {
+            return bookShelf;
+        },
+        selectBookShelfItem: (_, { bookShelfItemId }) => {
+            let res = bookShelf.items.find((item) => item.bookShelfItemId == bookShelfItemId);
+            console.log(res);
+            return res;
+        }
+    },
+    BookShelfItem: {
+        book: (parent, args, context, info) => {
+            let id = parent.bookId;
+            let res = books.find((book) => book.id == id);
+            return res;
+        },
+        status: (parent, args, context, info) => {
+            let id = parent.bookShelfItemId;
+            let res = status.find((status) => status.bookShelfItemId == id);
+            return res;
+        }
+    },
+    BookStatus: {
+        review: (parent, args, context, info) => {
+            let id = parent.bookShelfItemId;
+            let res = status.find((status) => status.bookShelfItemId == id);
+            const result = { score: res.score, comment: res.comment };
+            return result;
+        }
     },
     Mutation: {
         deleteBook: (_, { id }) => {
@@ -55,7 +110,6 @@ const resolvers = {
         createBook: (_, { book }) => {
             const number = books.length + 1;
             book.id = number.toString();
-            console.log(book);
             books.push(book);
             return book;
         },
