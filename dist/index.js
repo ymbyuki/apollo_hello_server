@@ -44,6 +44,17 @@ const resolvers = {
             catch (error) {
                 return false;
             }
+        },
+        addBookShelf: (_, { bookId, status }) => {
+            try {
+                let bookShelfItemId = (bookShelf.items.length + 1).toString();
+                bookShelf.items.push({ bookShelfItemId, bookId, status: status.readingStatus });
+                let res = bookShelf.items.find((item) => item.bookShelfItemId == bookShelfItemId);
+                return res;
+            }
+            catch (error) {
+                return false;
+            }
         }
     },
     BookShelfItem: {

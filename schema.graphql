@@ -17,7 +17,7 @@ type Mutation {
   updateBook(id: ID!, book: BookUpdateInput): Book!
   deleteBook(id: ID!): Boolean!
 
-  addBookShelf(bookId: ID!, status: BookStatusInput!): BookShelfItem!
+  addBookShelfItem(bookId: ID!, status: BookStatusInput!): BookShelfItem!
   updateStatus(bookShelfItemId: ID!, status: BookStatusInput!): BookShelfItem!
   deleteBookShelfItem(bookShelfItemId: ID!): Boolean!
 }

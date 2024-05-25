@@ -24,6 +24,14 @@ interface BookCreateInput {
   releaseDate: string;
 }
 
+interface BookStatusInput {
+  readingStatus: Status,
+  review: {
+    score: number,
+    comment: string;
+  }
+}
+
 let bookShelf = {
   items: [
     {
@@ -75,4 +83,4 @@ let bookDb: BookCreateInput[] = [
   },
 ];
 
-export { bookShelf, status, bookDb, BookCreateInput };
+export { bookShelf, status, bookDb, BookCreateInput, BookStatusInput };

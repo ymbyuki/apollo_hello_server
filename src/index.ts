@@ -3,7 +3,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { addResolversToSchema } from "@graphql-tools/schema";
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchemaSync } from "@graphql-tools/load";
-import { bookShelf, bookDb, status, BookCreateInput } from "./data.js";
+import { bookShelf, bookDb, status, BookCreateInput, BookStatusInput } from "./data.js";
 
 const schema = loadSchemaSync("./schema.graphql", {loaders: [new GraphQLFileLoader()]});
 let books = [...bookDb] as BookCreateInput[];
@@ -65,10 +65,14 @@ const resolvers = {
      * @param param1 書籍情報
      * @returns 書籍情報
      */
-    createBook: (_, { book } : {book : BookCreateInput}): BookCreateInput => {
-      book.id = (books.length + 1).toString();
-      books.push(book);
-      return book;
+    createBook: (_, { book } : {book : BookCreateInput}): BookCreateInput | boolean=> {
+      try {
+        book.id = (books.length + 1).toString();
+        books.push(book);
+        return book;
+      } catch (error) {
+        return false;
+      }
     },
 
     /**
@@ -77,10 +81,31 @@ const resolvers = {
      * @param param1 書籍情報
      * @returns 書籍情報
      */
-    updateBook: (_, { id, book }: {id: string, book: BookCreateInput}): BookCreateInput => {
-      const index = books.findIndex((book: BookCreateInput) => book.id === id);
-      books[index] = { ...books[index], ...book };
-      return books[index];
+    updateBook: (_, { id, book }: {id: string, book: BookCreateInput}): BookCreateInput | boolean => {
+      try {
+        const index = books.findIndex((book: BookCreateInput) => book.id === id);
+        books[index] = { ...books[index], ...book };
+        return books[index];
+      } catch (error) {
+        return false;
+      }
+    },
+
+    /**
+     * 本棚に書籍を追加
+     * @param _ 
+     * @param param1 書籍ID, ステータス
+     * @returns 書籍情報
+     */
+    addBookShelfItem: (_, {bookId, status}: {bookId: string, status: BookStatusInput}) => {
+      try {
+        let bookShelfItemId = (bookShelf.items.length + 1).toString();
+        bookShelf.items.push({bookShelfItemId, bookId, status: status.readingStatus});
+        let res = bookShelf.items.find((item) => item.bookShelfItemId == bookShelfItemId);
+        return res;
+      } catch (error) {
+        return false;
+      }
     },
 
     /**
@@ -96,7 +121,9 @@ const resolvers = {
       } catch (error) {
         return false;
       }
-    }
+    },
+
+
   },
 
   /**
