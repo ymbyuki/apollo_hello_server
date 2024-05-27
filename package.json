@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "dev": "nodemon --exec tsx src/index.ts --ext ts,graphql"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,9 @@
     "@graphql-tools/graphql-file-loader": "^8.0.1",
     "@graphql-tools/load": "^8.0.2",
     "@graphql-tools/schema": "^10.0.3",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "nodemon": "^3.1.1",
+    "tsx": "^4.11.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
