@@ -1,3 +1,5 @@
+import { DB } from "kysely-codegen";
+
 enum Category {
   FICTION = "FICTION",
   TRAVEL = "TRAVEL",
@@ -112,14 +114,14 @@ import { db } from '../database'
 
 const seed = async () => {
   const tables = (await db.introspection.getTables()).map(
-    (t) => t.name as any
+    (t) => t.name as keyof DB
   );
-  await Promise.all(tables.map((t) => db.deleteFrom(t as any).execute()));
-  await db.insertInto('author_tbl').values(author).execute()
-  await db.insertInto('book_tbl').values(bookDb).execute()
-  await db.insertInto('reading_status_tbl').values(reading_status).execute()
-  await db.insertInto('status_tbl').values(status).execute()
-  await db.insertInto('book_shelf_tbl').values(bookShelf.items).execute()
+  await Promise.all(tables.map((t) => db.deleteFrom(t as keyof DB).execute()));
+  await db.insertInto('authorTbl').values(author).execute()
+  await db.insertInto('bookTbl').values(bookDb).execute()
+  await db.insertInto('readingStatusTbl').values(reading_status).execute()
+  await db.insertInto('statusTbl').values(status).execute()
+  await db.insertInto('bookShelfTbl').values(bookShelf.items).execute()
 }
 
 seed()
