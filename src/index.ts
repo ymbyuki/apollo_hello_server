@@ -6,7 +6,7 @@ import { loadSchemaSync } from "@graphql-tools/load";
 import { bookShelf, bookDb, status, BookCreateInput, BookStatusInput } from "./data.js";
 import { db } from "./database/database";
 import { MyContext } from "./context.js";
-import { findAllBooks } from "./repository/book";
+import { findAllBooks, findBookById } from "./repository/book";
 import { findAuthorById } from "./repository/author.js";
 
 const schema = loadSchemaSync("./schema.graphql", { loaders: [new GraphQLFileLoader()] });
@@ -30,7 +30,10 @@ const resolvers = {
      * @param param1 書籍ID
      * @returns 書籍内容
      */
-    selectBook: (_, { id }: { id: string }): BookCreateInput => books.find((book) => book.id === id),
+    selectBook: async (_, { id }: { id: string }) => {
+      const book = await findBookById(1);
+      return book;
+    },
 
     /**
      * 本棚の書籍全件取得
