@@ -6,7 +6,7 @@ import { loadSchemaSync } from "@graphql-tools/load";
 import { bookShelf, bookDb, status, BookCreateInput, BookStatusInput } from "./data.js";
 import { db } from "./database/database";
 import { MyContext } from "./context.js";
-import { findAllBooks, findBookById } from "./repository/book";
+import { findAllBooks, findBookById, deleteBook } from "./repository/book";
 import { findAuthorById } from "./repository/author.js";
 
 const schema = loadSchemaSync("./schema.graphql", { loaders: [new GraphQLFileLoader()] });
@@ -30,8 +30,8 @@ const resolvers = {
      * @param param1 書籍ID
      * @returns 書籍内容
      */
-    selectBook: async (_, { id }: { id: string }) => {
-      const book = await findBookById(1);
+    selectBook: async (_, { id }: { id: number }) => {
+      const book = await findBookById(id);
       return book;
     },
 
@@ -61,13 +61,11 @@ const resolvers = {
      * @param param1 書籍ID
      * @returns {boolean} ture: 成功, false: 失敗
      */
-    deleteBook: (_, { id }: { id: string }): boolean => {
-      try {
-        books = books.filter((book) => book.id !== id);
-        return true;
-      } catch (error) {
-        return false;
-      }
+    deleteBook: async (_, { id }: { id: number }): Promise<boolean> => {
+      const res = await deleteBook(id);
+      console.log(res);
+
+      return res;
     },
 
     /**
