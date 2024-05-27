@@ -6,7 +6,9 @@
   "scripts": {
     "compile": "tsc",
     "start": "npm run compile && node ./dist/index.js",
-    "dev": "nodemon --exec tsx src/index.ts --ext ts,graphql"
+    "dev": "nodemon --exec tsx src/index.ts --ext ts,graphql",
+    "db:migrate": "tsx src/database/migrate.ts",
+    "db:rollback": "tsx src/database/rollback.ts"
   },
   "keywords": [],
   "author": "",

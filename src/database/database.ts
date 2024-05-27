@@ -4,11 +4,11 @@ import { Kysely, MysqlDialect } from 'kysely'
 
 const dialect = new MysqlDialect({
   pool: createPool({
-    database: 'test',
+    database: 'api',
     host: 'localhost',
-    user: 'admin',
-    password: '123',
-    port: 3308,
+    user: 'root',
+    password: 'root',
+    port: 3306,
     connectionLimit: 10,
   })
 })
