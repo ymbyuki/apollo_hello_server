@@ -12,6 +12,7 @@ enum Category {
   BUSINESS = "BUSINESS",
   ART = "ART",
   MUSIC = "MUSIC",
+  OTHER = "OTHER",
 }
 
 interface BookCreateInput {

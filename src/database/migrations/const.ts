@@ -1,0 +1,4 @@
+const SMALL_VARVARCHAR = "varchar(30)";
+const NORMAL_VARVARCHAR = "varchar(255)";
+
+export { SMALL_VARVARCHAR, NORMAL_VARVARCHAR };
