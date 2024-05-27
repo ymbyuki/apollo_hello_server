@@ -6,6 +6,8 @@ import { loadSchemaSync } from "@graphql-tools/load";
 import { bookShelf, bookDb, status, BookCreateInput, BookStatusInput } from "./data.js";
 import { db } from "./database/database";
 import { MyContext } from "./context.js";
+import { findAllBooks } from "./repository/book";
+import { findAuthorById } from "./repository/author.js";
 
 const schema = loadSchemaSync("./schema.graphql", { loaders: [new GraphQLFileLoader()] });
 let books = [...bookDb] as BookCreateInput[];
@@ -16,7 +18,11 @@ const resolvers = {
      * 書籍全件取得
      * @returns {BookCreateInput[]} books
      */
-    selectBooks: () => books,
+    selectBooks: async () => {
+      const books = await findAllBooks();
+      console.log(books);
+      return books;
+    },
 
     /**
      * IDからの書籍取得
@@ -153,6 +159,14 @@ const resolvers = {
       return result;
     },
   },
+
+  Book: {
+    author: async (parent) => {
+      const res = await findAuthorById(parent.authorId);
+      console.log(res);
+      return res.author;
+    },
+  },
 };
 
 const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
@@ -161,6 +175,6 @@ const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req }): Promise<MyContext> => {
     return { id: 1 };
-  }
+  },
 });
 console.log(`🚀  Server ready at: ${url}`);
